@@ -34,8 +34,8 @@ test('When a project convention is kebabCase and some files are wrong then we di
   )
 })
 
-test('When a project convention is camelCase and some files are wrong then we display an error message and kill a process', async () => {
-  const args = ['folder=./mocks', 'type=camelCase', 'ignore=[README.md]']
+test('When a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
+  const args = ['folder=./mocks', 'type=capitalize', 'ignore=[README.md]']
   mockArgv(args)
   const mockLog = mockProcess.mockConsoleLog()
   const mockExit = mockProcess.mockProcessExit()

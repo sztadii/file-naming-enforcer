@@ -1,7 +1,7 @@
 import * as find from 'find'
 import * as lodash from 'lodash'
 
-const defaultIgnores = ['node_modules', '.git', 'idea']
+const defaultIgnores = ['node_modules', '.git', 'idea', 'index']
 
 export async function validate(): Promise<void> {
   const { folder = './', ext = '*', type = 'kebabCase', ignore = [] } = getSettings()
