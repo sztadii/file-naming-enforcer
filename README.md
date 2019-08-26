@@ -5,8 +5,12 @@
 If a team want to keep only one file naming convention we should automate that process
 and forget about small issues during PRs
 
-## Examples of using
-* file-naming-enforcer type=kebab-case path=./src/* ignore=['./README.md', 'Dockerfile'] 
-* file-naming-enforcer type=capitalize path=./src/components/*.js
-* file-naming-enforcer type=camel-case path=./src/utils/*
-* file-naming-enforcer type=kebab-case path=./src/utils/new-file.js
+Example
+```
+"scripts": {
+  "lint-react-components": "file-naming-enforcer type=capitalize folder=./components ext=js"
+  "lint-styles": "file-naming-enforcer type=kebabCase folder=./src ext=scss"
+  "lint-utils": "file-naming-enforcer type=camelCase folder=./src/utils ext=js"
+  ...
+}
+```

@@ -4,7 +4,7 @@ import * as lodash from 'lodash'
 const defaultIgnores = ['node_modules', '.git', 'idea']
 
 export async function validate(): Promise<void> {
-  const { path = './', type = 'kebabCase', ignore = [] } = getSettings()
+  const { folder = './', ext = '*', type = 'kebabCase', ignore = [] } = getSettings()
   const validateFunction = lodash[type.toString()]
 
   if (!validateFunction) {
@@ -16,9 +16,9 @@ export async function validate(): Promise<void> {
   let files = []
 
   try {
-    files = await getFiles(path.toString())
+    files = await getFiles(folder.toString(), ext.toString())
   } catch (e) {
-    console.log(`Uuu, path ${path.toString()} is empty, please take a look on that`)
+    console.log(`Uuu, folder ${folder} is empty, please take a look on that`)
     process.exit(1)
   }
 
@@ -46,18 +46,22 @@ export async function validate(): Promise<void> {
   }
 }
 
-function getFiles(path: string): Promise<string[]> {
-  return new Promise((resolve, reject) => find.file(path, resolve).error(reject))
+function getFiles(folder: string, ext: string): Promise<string[]> {
+  return new Promise((resolve, reject) =>
+    find.file(new RegExp(`\\.${ext}$`), folder, resolve).error(reject)
+  )
 }
 
 function getSettings() {
   const type = process.argv.find(e => e.includes('type'))
-  const path = process.argv.find(e => e.includes('path'))
+  const folder = process.argv.find(e => e.includes('folder'))
+  const ext = process.argv.find(e => e.includes('ext'))
   const ignore = process.argv.find(e => e.includes('ignore'))
 
   return {
     ...parseToObject(type),
-    ...parseToObject(path),
+    ...parseToObject(folder),
+    ...parseToObject(ext),
     ...parseToObject(ignore)
   }
 }

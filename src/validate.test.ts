@@ -12,7 +12,7 @@ beforeEach(() => {
 })
 
 test('When a project convention is kebabCase and all files are correct then we display a success message', async () => {
-  const args = ['path=./', 'ignore=[README.md, Dockerfile]']
+  const args = ['folder=./mocks', 'ignore=[README.md, Dockerfile]']
   mockArgv(args)
   const mockLog = mockProcess.mockConsoleLog()
 
@@ -21,19 +21,7 @@ test('When a project convention is kebabCase and all files are correct then we d
 })
 
 test('When a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
-  const mockLog = mockProcess.mockConsoleLog()
-  const mockExit = mockProcess.mockProcessExit()
-
-  await validate()
-  expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith(
-    'Uuu, some files are wrong. Please take a look on below files',
-    ['README.md']
-  )
-})
-
-test('When a project convention is camelCase and some files are wrong then we display an error message and kill a process', async () => {
-  const args = ['type=camelCase', 'ignore=[README.md]']
+  const args = ['folder=./mocks']
   mockArgv(args)
   const mockLog = mockProcess.mockConsoleLog()
   const mockExit = mockProcess.mockProcessExit()
@@ -42,12 +30,26 @@ test('When a project convention is camelCase and some files are wrong then we di
   expect(mockExit).toHaveBeenCalledWith(1)
   expect(mockLog).toHaveBeenCalledWith(
     'Uuu, some files are wrong. Please take a look on below files',
-    ['package-lock.json']
+    ['mocks/README.md']
+  )
+})
+
+test('When a project convention is camelCase and some files are wrong then we display an error message and kill a process', async () => {
+  const args = ['folder=./mocks', 'type=camelCase', 'ignore=[README.md]']
+  mockArgv(args)
+  const mockLog = mockProcess.mockConsoleLog()
+  const mockExit = mockProcess.mockProcessExit()
+
+  await validate()
+  expect(mockExit).toHaveBeenCalledWith(1)
+  expect(mockLog).toHaveBeenCalledWith(
+    'Uuu, some files are wrong. Please take a look on below files',
+    ['mocks/simple-js-file.js', 'mocks/some-scss-file.sass']
   )
 })
 
 test('When a project convention is not supported then we display an error message and kill a process', async () => {
-  const args = ['type=newCase']
+  const args = ['folder=./mocks', 'type=newCase']
   mockArgv(args)
   const mockLog = mockProcess.mockConsoleLog()
   const mockExit = mockProcess.mockProcessExit()
@@ -57,13 +59,22 @@ test('When a project convention is not supported then we display an error messag
   expect(mockLog).toHaveBeenCalledWith('Uuu, we do not support newCase')
 })
 
-test('When a path is empty then we display a error message and kill a process', async () => {
-  const args = ['path=./xxx']
+test('When a folder is empty then we display a error message and kill a process', async () => {
+  const args = ['folder=./xxx']
   mockArgv(args)
   const mockLog = mockProcess.mockConsoleLog()
   const mockExit = mockProcess.mockProcessExit()
 
   await validate()
   expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith('Uuu, path ./xxx is empty, please take a look on that')
+  expect(mockLog).toHaveBeenCalledWith('Uuu, folder ./xxx is empty, please take a look on that')
+})
+
+test('When a searched files are correct then we display a success message', async () => {
+  const args = ['folder=./mocks', 'ext=scss']
+  mockArgv(args)
+  const mockLog = mockProcess.mockConsoleLog()
+
+  await validate()
+  expect(mockLog).toHaveBeenCalledWith('Great, everything looks fine :)')
 })

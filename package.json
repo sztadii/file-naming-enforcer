@@ -1,6 +1,6 @@
 {
   "name": "file-naming-enforcer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Enforce developers to use only one file naming convention inside the project",
   "main": "./dist/index.js",
   "author": "sztadii",
