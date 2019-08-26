@@ -54,7 +54,7 @@ function getFiles(folder: string, ext: string): Promise<string[]> {
   )
 }
 
-function getSettings() {
+export function getSettings() {
   const type = process.argv.find(e => e.includes('type'))
   const folder = process.argv.find(e => e.includes('folder'))
   const ext = process.argv.find(e => e.includes('ext'))
@@ -80,6 +80,5 @@ function parseToArray(text: string): string[] {
   return text
     .replace('[', '')
     .replace(']', '')
-    .replace(' ', '')
     .split(',')
 }

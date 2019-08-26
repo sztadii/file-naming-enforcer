@@ -1,5 +1,5 @@
 import * as mockProcess from 'jest-mock-process'
-import { validate } from './validate'
+import { validate, getSettings } from './validate'
 
 const oldArgs = process.argv
 
@@ -77,4 +77,23 @@ test('When a searched files are correct then we display a success message', asyn
 
   await validate()
   expect(mockLog).toHaveBeenCalledWith('Great, everything looks fine :)')
+})
+
+test('Function getSettings without any issues extracts data from process.argv', async () => {
+  const args = [
+    'folder=./xxx',
+    'type=camelCase',
+    'ignore=[build,fonts,README.md,Dockerfile]',
+    'ext=scss'
+  ]
+  mockArgv(args)
+
+  const settings = getSettings()
+
+  expect(settings).toEqual({
+    folder: './xxx',
+    type: 'camelCase',
+    ignore: ['build', 'fonts', 'README.md', 'Dockerfile'],
+    ext: 'scss'
+  })
 })
