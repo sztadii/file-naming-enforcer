@@ -1,0 +1,85 @@
+{
+  "name": "file-naming-enforcer",
+  "version": "1.0.0",
+  "description": "Enforce developers to use only one file naming convention inside the project",
+  "main": "./dist/index.js",
+  "author": "sztadii",
+  "license": "ISC",
+  "homepage": "https://github.com/sztadii/file-naming-enforcer",
+  "keywords": [
+    "enforcer",
+    "validation",
+    "file enforcer",
+    "file naming enforcer",
+    "convention enforcer"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "start": "concurrently -k -r -s first 'npm run lint-watch' 'npm run test-watch'",
+    "check-validate": "npm run build && REQUIRED=npm node dist",
+    "test": "jest --silent",
+    "test-watch": "jest --watch",
+    "build": "npm run clean && babel src --out-dir dist --extensions '.ts' --ignore '**/*.test.ts'",
+    "lint": "esw './**/*.ts' --ignore-path .gitignore --color --max-warnings 0",
+    "lint-watch": "esw './**/*.ts' --ignore-path .gitignore --color --watch --cache",
+    "format": "prettier 'src/**/*.ts' --write",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "bin": {
+    "file-naming-enforcer": "./dist/index.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint",
+      "npm run format",
+      "git add"
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts?$"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^11.13.7",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "concurrently": "^4.1.0",
+    "eslint": "^5.11.1",
+    "eslint-plugin-jest": "^22.5.1",
+    "eslint-watch": "^4.0.2",
+    "husky": "^1.3.1",
+    "jest": "^23.6.0",
+    "jest-mock-process": "^1.1.0",
+    "lint-staged": "^8.1.0",
+    "prettier": "^1.15.3",
+    "regenerator-runtime": "^0.13.1",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "@types/find": "^0.2.1",
+    "@types/lodash": "^4.14.137",
+    "find": "^0.3.0",
+    "lodash": "^4.17.15"
+  }
+}
