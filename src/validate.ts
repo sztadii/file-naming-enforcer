@@ -8,8 +8,7 @@ export async function validate(): Promise<void> {
   const validateFunction = lodash[type.toString()]
 
   if (!validateFunction) {
-    console.log(`Uuu, we do not support ${type}`)
-    process.exit(1)
+    exitProcessWithMessage(`Uuu, we do not support ${type}`)
     return
   }
 
@@ -18,8 +17,7 @@ export async function validate(): Promise<void> {
   try {
     files = await getFiles(folder.toString(), ext.toString())
   } catch (e) {
-    console.log(`Uuu, folder ${folder} is empty, please take a look on that`)
-    process.exit(1)
+    exitProcessWithMessage(`Uuu, folder ${folder} is empty, please take a look on that`)
   }
 
   const ignores = [...defaultIgnores, ...ignore]
@@ -41,9 +39,13 @@ export async function validate(): Promise<void> {
     console.log('Great, everything looks fine :)')
   } else {
     const paths = elementsWithWrongValues.map(e => e.originalPath)
-    console.log('Uuu, some files are wrong. Please take a look on below files', paths)
-    process.exit(1)
+    exitProcessWithMessage('Uuu, some files are wrong. Please take a look on below files', paths)
   }
+}
+
+function exitProcessWithMessage(...message): void {
+  console.log(...message)
+  process.exit(1)
 }
 
 function getFiles(folder: string, ext: string): Promise<string[]> {
