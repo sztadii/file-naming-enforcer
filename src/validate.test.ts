@@ -56,3 +56,14 @@ test('When a project convention is not supported then we display an error messag
   expect(mockExit).toHaveBeenCalledWith(1)
   expect(mockLog).toHaveBeenCalledWith('Uuu, we do not support newCase')
 })
+
+test('When a path is empty then we display a error message and kill a process', async () => {
+  const args = ['path=./xxx']
+  mockArgv(args)
+  const mockLog = mockProcess.mockConsoleLog()
+  const mockExit = mockProcess.mockProcessExit()
+
+  await validate()
+  expect(mockExit).toHaveBeenCalledWith(1)
+  expect(mockLog).toHaveBeenCalledWith('Uuu, path ./xxx is empty, please take a look on that')
+})

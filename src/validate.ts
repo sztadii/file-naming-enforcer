@@ -13,7 +13,15 @@ export async function validate(): Promise<void> {
     return
   }
 
-  const files = await getFiles(path.toString())
+  let files = []
+
+  try {
+    files = await getFiles(path.toString())
+  } catch (e) {
+    console.log(`Uuu, path ${path.toString()} is empty, please take a look on that`)
+    process.exit(1)
+  }
+
   const ignores = [...defaultIgnores, ...ignore]
 
   const elementsToCompare = files
@@ -39,7 +47,7 @@ export async function validate(): Promise<void> {
 }
 
 function getFiles(path: string): Promise<string[]> {
-  return new Promise(resolve => find.file(path, resolve))
+  return new Promise((resolve, reject) => find.file(path, resolve).error(reject))
 }
 
 function getSettings() {
