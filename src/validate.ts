@@ -39,7 +39,10 @@ export async function validate(): Promise<void> {
     console.log('Great, everything looks fine :)')
   } else {
     const paths = elementsWithWrongValues.map(e => e.originalPath)
-    exitProcessWithMessage('Uuu, some files are wrong. Please take a look on below files', paths)
+    exitProcessWithMessage(
+      `Uuu, some files are not following your project naming convention (${type}). Please take a look on below files`,
+      paths
+    )
   }
 }
 
