@@ -29,7 +29,7 @@ test('When a project convention is kebabCase and some files are wrong then we di
   await validate()
   expect(mockExit).toHaveBeenCalledWith(1)
   expect(mockLog).toHaveBeenCalledWith(
-    'Uuu, some files are wrong. Please take a look on below files',
+    'Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files',
     ['mocks/README.md']
   )
 })
@@ -43,7 +43,7 @@ test('When a project convention is capitalize and some files are wrong then we d
   await validate()
   expect(mockExit).toHaveBeenCalledWith(1)
   expect(mockLog).toHaveBeenCalledWith(
-    'Uuu, some files are wrong. Please take a look on below files',
+    'Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files',
     ['mocks/simple-js-file.js', 'mocks/some-scss-file.sass']
   )
 })
