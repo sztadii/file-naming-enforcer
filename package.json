@@ -1,6 +1,6 @@
 {
   "name": "file-naming-enforcer",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Enforce developers to use only one file naming convention inside the project",
   "main": "./dist/index.js",
   "author": "sztadii",
@@ -13,8 +13,11 @@
     "file naming enforcer",
     "convention enforcer"
   ],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "start": "concurrently -k -r -s first 'npm run lint-watch' 'npm run test-watch'",
     "check-validate": "npm run build && REQUIRED=npm node dist",
     "test": "jest --coverage",
@@ -68,6 +71,8 @@
     "@babel/preset-env": "^7.8.6",
     "@babel/preset-typescript": "^7.8.3",
     "@getvim/execute": "^1.0.0",
+    "@types/find": "^0.2.1",
+    "@types/lodash": "^4.14.149",
     "@types/jest": "^24.9.1",
     "@types/node": "^11.15.7",
     "babel-core": "^7.0.0-bridge.0",
@@ -86,8 +91,6 @@
     "typescript": "^3.8.2"
   },
   "dependencies": {
-    "@types/find": "^0.2.1",
-    "@types/lodash": "^4.14.149",
     "find": "^0.3.0",
     "lodash": "^4.17.15"
   }
