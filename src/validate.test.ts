@@ -1,99 +1,73 @@
-import * as mockProcess from 'jest-mock-process'
-import { validate, getSettings } from './validate'
+const { execute } = require('@getvim/execute')
 
-const oldArgs = process.argv
+describe('validate function', () => {
+  it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
+    const stdout = await execute('npx ts-node src/index folder=./mocks ignore=[SIMPLE-READ.md]')
+    expect(stdout).toBe('Great, everything looks fine :)')
+  })
 
-function mockArgv(args: string[]) {
-  process.argv = [...oldArgs, ...args]
-}
+  it('ignore correctly some files', async () => {
+    require('../mocks/README.md')
+    require('../mocks/module/Dockerfile')
+    require('../mocks/module/setupProxy.js')
+    const stdout = await execute('npx ts-node src/index folder=./mocks ignore=[SIMPLE-READ.md]')
+    expect(stdout).toBe('Great, everything looks fine :)')
+  })
 
-beforeEach(() => {
-  process.argv = oldArgs
-})
+  it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./mocks')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toBe(
+        `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files [ 'mocks/SIMPLE-READ.md' ]`
+      )
+    }
 
-test('When a project convention is kebabCase and all files are correct then we display a success message', async () => {
-  const args = ['folder=./mocks', 'ignore=[README.md, Dockerfile]']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
+    expect.assertions(1)
+  })
 
-  await validate()
-  expect(mockLog).toHaveBeenCalledWith('Great, everything looks fine :)')
-})
+  it('when a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./mocks type=capitalize')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toBe(
+        `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files [
+  'mocks/SIMPLE-READ.md',
+  'mocks/simple-js-file.js',
+  'mocks/some-scss-file.sass'
+]`
+      )
+    }
 
-test('When a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
-  const args = ['folder=./mocks']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
-  const mockExit = mockProcess.mockProcessExit()
+    expect.assertions(1)
+  })
 
-  await validate()
-  expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith(
-    'Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files',
-    ['mocks/README.md']
-  )
-})
+  it('when a project convention is not supported then we display an error message and kill a process', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./mocks type=newCase')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toBe('Uuu, we do not support newCase')
+    }
 
-test('When a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
-  const args = ['folder=./mocks', 'type=capitalize', 'ignore=[README.md]']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
-  const mockExit = mockProcess.mockProcessExit()
+    expect.assertions(1)
+  })
 
-  await validate()
-  expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith(
-    'Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files',
-    ['mocks/simple-js-file.js', 'mocks/some-scss-file.sass']
-  )
-})
+  it('when a folder is empty then we display a error message and kill a process', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./xxx')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toBe('Uuu, folder ./xxx is empty, please take a look on that')
+    }
 
-test('When a project convention is not supported then we display an error message and kill a process', async () => {
-  const args = ['folder=./mocks', 'type=newCase']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
-  const mockExit = mockProcess.mockProcessExit()
+    expect.assertions(1)
+  })
 
-  await validate()
-  expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith('Uuu, we do not support newCase')
-})
-
-test('When a folder is empty then we display a error message and kill a process', async () => {
-  const args = ['folder=./xxx']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
-  const mockExit = mockProcess.mockProcessExit()
-
-  await validate()
-  expect(mockExit).toHaveBeenCalledWith(1)
-  expect(mockLog).toHaveBeenCalledWith('Uuu, folder ./xxx is empty, please take a look on that')
-})
-
-test('When a searched files are correct then we display a success message', async () => {
-  const args = ['folder=./mocks', 'ext=scss']
-  mockArgv(args)
-  const mockLog = mockProcess.mockConsoleLog()
-
-  await validate()
-  expect(mockLog).toHaveBeenCalledWith('Great, everything looks fine :)')
-})
-
-test('Function getSettings without any issues extracts data from process.argv', async () => {
-  const args = [
-    'folder=./xxx',
-    'type=camelCase',
-    'ignore=[build,fonts,README.md,Dockerfile]',
-    'ext=scss'
-  ]
-  mockArgv(args)
-
-  const settings = getSettings()
-
-  expect(settings).toEqual({
-    folder: './xxx',
-    type: 'camelCase',
-    ignore: ['build', 'fonts', 'README.md', 'Dockerfile'],
-    ext: 'scss'
+  it('when a searched files are correct then we display a success message', async () => {
+    const stdout = await execute('npx ts-node src/index folder=./mocks ext=scss')
+    expect(stdout).toBe('Great, everything looks fine :)')
   })
 })
