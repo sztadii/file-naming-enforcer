@@ -66,8 +66,19 @@ describe('validate function', () => {
     expect.assertions(1)
   })
 
-  it('when a searched files are correct then we display a success message', async () => {
-    const stdout = await execute('npx ts-node src/index folder=./mocks ext=scss')
+  it('when we could not find any file with provided extension', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./mocks ext=tsx')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toBe('Uuu, in folder ./mocks we could not find any file with .tsx extension')
+    }
+
+    expect.assertions(1)
+  })
+
+  it('when searched files are correct then we display a success message', async () => {
+    const stdout = await execute('npx ts-node src/index folder=./mocks ext=sass')
     expect(stdout).toBe('Great, everything looks fine :)')
   })
 })

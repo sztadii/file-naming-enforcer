@@ -28,6 +28,12 @@ export async function validate(): Promise<void> {
     exitProcessWithMessage(`Uuu, folder ${folder} is empty, please take a look on that`)
   }
 
+  if (!files.length) {
+    exitProcessWithMessage(
+      `Uuu, in folder ${folder} we could not find any file with .${ext} extension`
+    )
+  }
+
   const ignores = [...defaultIgnores, ...ignore]
 
   const elementsToCompare = files
