@@ -1,0 +1,28 @@
+name: Quality check
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Dependency instalation
+        run: npm ci
+
+      - name: Linting
+        run: npm run lint
+
+      - name: Integration tests
+        run: npm run test
+
+      - name: Checking packages security
+        run: npm audit --audit-level=moderate
+
+      - name: Checking typescript types and build app
+        run: npm run build
