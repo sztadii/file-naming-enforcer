@@ -11,7 +11,7 @@ describe('validate function', () => {
     require('../mocks/module/Dockerfile')
     require('../mocks/module/setupProxy.js')
     const stdout = await execute('npx ts-node src/index folder=./mocks ignore=[SIMPLE-READ.md]')
-    expect(stdout).toBe('Great, everything looks fine :)')
+    expect(stdout).toContain('Great, everything looks fine :)')
   })
 
   it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
@@ -19,7 +19,7 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./mocks')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toBe(
+      expect(stdout).toContain(
         `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files [ 'mocks/SIMPLE-READ.md' ]`
       )
     }
@@ -32,7 +32,7 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./mocks type=capitalize')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toBe(
+      expect(stdout).toContain(
         `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files [
   'mocks/SIMPLE-READ.md',
   'mocks/simple-js-file.js',
@@ -49,7 +49,7 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./mocks type=newCase')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toBe('Uuu, we do not support newCase')
+      expect(stdout).toContain('Uuu, we do not support newCase')
     }
 
     expect.assertions(1)
@@ -60,7 +60,7 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./xxx')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toBe('Uuu, folder ./xxx is empty, please take a look on that')
+      expect(stdout).toContain('Uuu, folder ./xxx is empty, please take a look on that')
     }
 
     expect.assertions(1)
@@ -71,7 +71,9 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./mocks ext=tsx')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toBe('Uuu, in folder ./mocks we could not find any file with .tsx extension')
+      expect(stdout).toContain(
+        'Uuu, in folder ./mocks we could not find any file with .tsx extension'
+      )
     }
 
     expect.assertions(1)
@@ -79,6 +81,6 @@ describe('validate function', () => {
 
   it('when searched files are correct then we display a success message', async () => {
     const stdout = await execute('npx ts-node src/index folder=./mocks ext=sass')
-    expect(stdout).toBe('Great, everything looks fine :)')
+    expect(stdout).toContain('Great, everything looks fine :)')
   })
 })
