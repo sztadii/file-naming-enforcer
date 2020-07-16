@@ -61,7 +61,9 @@ export async function validate(): Promise<void> {
 }
 
 function exitProcessWithMessage(...message): void {
+  console.log('------')
   console.log(...message)
+  console.log('------\n')
   process.exit(1)
 }
 
