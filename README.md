@@ -1,9 +1,10 @@
 # Welcome to **[file-naming-enforcer](https://github.com/sztadii/file-naming-enforcer)**!
 
-## Why
+## Problem to solve
 
-If a team want to keep only one file naming convention we should automate that process
-and forget about small issues during PRs
+If your team wants to follow some file name conventions,
+like a capital case for classes for components or kebab case for styles or any other,
+then you should automate it and forget about the unnecessary discussion during code review.
 
 ## How to install
 
