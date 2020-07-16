@@ -20,7 +20,7 @@
     "prepublishOnly": "npm run build",
     "start": "concurrently -k -r -s first 'npm run lint-watch' 'npm run test-watch'",
     "check-validate": "npm run build && REQUIRED=npm node dist",
-    "test": "jest --coverage",
+    "test": "jest",
     "test-watch": "jest --watch",
     "build": "npm run clean && babel src --out-dir dist --extensions '.ts' --ignore '**/*.test.ts'",
     "lint": "esw './**/*.ts' --ignore-path .gitignore --color --max-warnings 0",

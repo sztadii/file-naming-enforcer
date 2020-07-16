@@ -88,8 +88,9 @@ export function getSettings() {
 function parseToObject(args: string) {
   if (!args) return {}
   const [key, val] = args.split('=')
+  const parsedValue = val.includes('[') ? parseToArray(val) : val
   return {
-    [key]: val.includes('[') ? parseToArray(val) : val
+    [key]: parsedValue
   }
 }
 
