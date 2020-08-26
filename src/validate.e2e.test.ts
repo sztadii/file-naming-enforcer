@@ -19,10 +19,15 @@ describe('validate function', () => {
     expect(stdout).toBe('Great, everything looks fine :)')
   })
 
-  it('ignore correctly some files', async () => {
+  it('by default ignore some files and allow to ignore other', async () => {
+    // Below files are part of defaultIgnores
     require('../mocks/README.md')
     require('../mocks/module/Dockerfile')
     require('../mocks/module/setupProxy.js')
+
+    // Below file will be ignored
+    require('../mocks/SIMPLE-READ.md')
+
     const stdout = await execute(
       'npx ts-node src/index type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
     )
