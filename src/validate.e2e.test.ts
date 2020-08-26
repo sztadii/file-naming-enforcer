@@ -6,7 +6,7 @@ describe('validate function', () => {
       await execute('npx ts-node src/index folder=./mocks')
     } catch (e) {
       const { stdout } = e
-      expect(stdout).toContain('Uuu, `type` flag is missing')
+      expect(stdout).toContain('Uuu, `type` argument is missing')
     }
 
     expect.assertions(1)

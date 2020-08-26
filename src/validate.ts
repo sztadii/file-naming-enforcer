@@ -15,7 +15,7 @@ export async function validate(): Promise<void> {
   const { folder = './', ext = '*', type, ignore = [] } = getSettings()
 
   if (!type) {
-    exitProcessWithMessage('Uuu, `type` flag is missing')
+    exitProcessWithMessage('Uuu, `type` argument is missing')
     return
   }
 
