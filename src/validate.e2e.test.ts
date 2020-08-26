@@ -1,8 +1,21 @@
 const { execute } = require('@getvim/execute')
 
 describe('validate function', () => {
+  it('when type is missing then we display an error message and kill a process', async () => {
+    try {
+      await execute('npx ts-node src/index folder=./mocks')
+    } catch (e) {
+      const { stdout } = e
+      expect(stdout).toContain('Uuu, `type` flag is missing')
+    }
+
+    expect.assertions(1)
+  })
+
   it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
-    const stdout = await execute('npx ts-node src/index folder=./mocks ignore=[SIMPLE-READ.md]')
+    const stdout = await execute(
+      'npx ts-node src/index type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
+    )
     expect(stdout).toBe('Great, everything looks fine :)')
   })
 
@@ -10,13 +23,15 @@ describe('validate function', () => {
     require('../mocks/README.md')
     require('../mocks/module/Dockerfile')
     require('../mocks/module/setupProxy.js')
-    const stdout = await execute('npx ts-node src/index folder=./mocks ignore=[SIMPLE-READ.md]')
+    const stdout = await execute(
+      'npx ts-node src/index type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
+    )
     expect(stdout).toContain('Great, everything looks fine :)')
   })
 
   it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
     try {
-      await execute('npx ts-node src/index folder=./mocks')
+      await execute('npx ts-node src/index type=kebabCase folder=./mocks')
     } catch (e) {
       const { stdout } = e
       expect(stdout).toContain(
@@ -57,7 +72,7 @@ describe('validate function', () => {
 
   it('when a folder is empty then we display a error message and kill a process', async () => {
     try {
-      await execute('npx ts-node src/index folder=./xxx')
+      await execute('npx ts-node src/index type=kebabCase folder=./xxx')
     } catch (e) {
       const { stdout } = e
       expect(stdout).toContain('Uuu, folder ./xxx is empty, please take a look on that')
@@ -68,7 +83,7 @@ describe('validate function', () => {
 
   it('when we could not find any file with provided extension', async () => {
     try {
-      await execute('npx ts-node src/index folder=./mocks ext=tsx')
+      await execute('npx ts-node src/index type=kebabCase folder=./mocks ext=tsx')
     } catch (e) {
       const { stdout } = e
       expect(stdout).toContain(
@@ -80,7 +95,7 @@ describe('validate function', () => {
   })
 
   it('when searched files are correct then we display a success message', async () => {
-    const stdout = await execute('npx ts-node src/index folder=./mocks ext=sass')
+    const stdout = await execute('npx ts-node src/index type=kebabCase folder=./mocks ext=sass')
     expect(stdout).toContain('Great, everything looks fine :)')
   })
 })
