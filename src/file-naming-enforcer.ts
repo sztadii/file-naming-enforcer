@@ -16,14 +16,12 @@ export async function fileNamingEnforcer(): Promise<void> {
 
   if (!type) {
     exitProcessWithMessage('Uuu, `type` argument is missing')
-    return
   }
 
   const validateFunction = lodash[type.toString()]
 
   if (!validateFunction) {
     exitProcessWithMessage(`Uuu, we do not support ${type}`)
-    return
   }
 
   let files = []
@@ -55,15 +53,15 @@ export async function fileNamingEnforcer(): Promise<void> {
     e.toCompare.find(e => validateFunction(e) !== e)
   )
 
-  if (!elementsWithWrongValues.length) {
-    console.log('Great, everything looks fine :)')
-  } else {
+  if (elementsWithWrongValues.length) {
     const paths = elementsWithWrongValues.map(e => e.originalPath)
     exitProcessWithMessage(
       `Uuu, some files are not following your project naming convention (${type}). Please take a look on below files`,
       paths
     )
   }
+
+  console.log('Great, everything looks fine :)')
 }
 
 function exitProcessWithMessage(...message): void {
