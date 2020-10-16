@@ -12,7 +12,7 @@ const defaultIgnores = [
 ]
 
 export async function fileNamingEnforcer(): Promise<void> {
-  const { folder = './', ext = '*', type, ignore = [] } = getSettings()
+  const { folder = './', ext = '*', type, ignore = [] } = getParsedArguments()
 
   if (!type) {
     exitProcessWithMessage('Uuu, `type` argument is missing')
@@ -79,30 +79,31 @@ function getFiles(folder: string, ext: string): Promise<string[]> {
   )
 }
 
-export function getSettings() {
-  const type = process.argv.find(e => e.includes('type'))
-  const folder = process.argv.find(e => e.includes('folder'))
-  const ext = process.argv.find(e => e.includes('ext'))
-  const ignore = process.argv.find(e => e.includes('ignore'))
+export function getParsedArguments() {
+  const { argv } = process
+  const type = argv.find(e => e.includes('type'))
+  const folder = argv.find(e => e.includes('folder'))
+  const ext = argv.find(e => e.includes('ext'))
+  const ignore = argv.find(e => e.includes('ignore'))
 
   return {
-    ...parseToObject(type),
-    ...parseToObject(folder),
-    ...parseToObject(ext),
-    ...parseToObject(ignore)
+    ...parseProcessArgumentToObject(type),
+    ...parseProcessArgumentToObject(folder),
+    ...parseProcessArgumentToObject(ext),
+    ...parseProcessArgumentToObject(ignore)
   }
 }
 
-function parseToObject(args: string) {
-  if (!args) return {}
-  const [key, val] = args.split('=')
-  const parsedValue = val.includes('[') ? parseToArray(val) : val
+function parseProcessArgumentToObject(processArgument: string) {
+  if (!processArgument) return {}
+  const [key, val] = processArgument.split('=')
+  const parsedValue = val.includes('[') ? parseTextToArray(val) : val
   return {
     [key]: parsedValue
   }
 }
 
-function parseToArray(text: string): string[] {
+function parseTextToArray(text: string): string[] {
   return text
     .replace('[', '')
     .replace(']', '')
