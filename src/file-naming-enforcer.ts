@@ -11,7 +11,7 @@ const defaultIgnores = [
   'setupProxy'
 ]
 
-export async function validate(): Promise<void> {
+export async function fileNamingEnforcer(): Promise<void> {
   const { folder = './', ext = '*', type, ignore = [] } = getSettings()
 
   if (!type) {

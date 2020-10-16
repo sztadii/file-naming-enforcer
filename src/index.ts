@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-import { validate } from './validate'
-validate()
+import { fileNamingEnforcer } from './file-naming-enforcer'
+fileNamingEnforcer()
