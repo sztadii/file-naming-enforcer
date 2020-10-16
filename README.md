@@ -29,4 +29,4 @@ Once everything will be set up properly, <br />
 and some files will be not following our project convention, <br />
 then you should see below errors <br />
 
-![Screenshot](error-example.png)
+![Screenshot](https://raw.githubusercontent.com/sztadii/file-naming-enforcer/master/error-example.png?raw=true)
