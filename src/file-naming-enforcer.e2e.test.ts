@@ -64,7 +64,7 @@ describe('fileNamingEnforcer function', () => {
 
   it('when a project convention is not supported then we display an error message and kill a process', async () => {
     try {
-      await fileNamingEnforcer('src/index folder=./mocks type=newCase')
+      await fileNamingEnforcer('folder=./mocks type=newCase')
     } catch (e) {
       const { stdout } = e
       expect(stdout).toContain('Uuu, we do not support newCase')
