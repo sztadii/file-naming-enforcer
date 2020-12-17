@@ -12,7 +12,14 @@ const defaultIgnores = [
 ]
 
 export async function fileNamingEnforcer(): Promise<void> {
-  const { folder = './', ext = '*', type, ignore = [] } = getParsedArguments()
+  const parsedArgumentsFromProcess = getParsedArgumentsFromProcess([
+    'folder',
+    'ext',
+    'type',
+    'ignore'
+  ])
+
+  const { folder = './', ext = '*', type, ignore = [] } = parsedArgumentsFromProcess
 
   if (!type) {
     exitProcessWithMessage('Uuu, `type` argument is missing')
@@ -24,7 +31,7 @@ export async function fileNamingEnforcer(): Promise<void> {
     exitProcessWithMessage(`Uuu, we do not support ${type}`)
   }
 
-  let files = []
+  let files: string[] = []
 
   try {
     files = await getFiles(folder.toString(), ext.toString())
@@ -77,22 +84,21 @@ function getFiles(folder: string, ext: string): Promise<string[]> {
   )
 }
 
-export function getParsedArguments() {
-  const { argv } = process
-  const type = argv.find(e => e.includes('type'))
-  const folder = argv.find(e => e.includes('folder'))
-  const ext = argv.find(e => e.includes('ext'))
-  const ignore = argv.find(e => e.includes('ignore'))
-
-  return {
-    ...parseProcessArgumentToObject(type),
-    ...parseProcessArgumentToObject(folder),
-    ...parseProcessArgumentToObject(ext),
-    ...parseProcessArgumentToObject(ignore)
-  }
+type ParsedArgumentType = {
+  [key: string]: string | string[]
 }
 
-function parseProcessArgumentToObject(processArgument: string) {
+export function getParsedArgumentsFromProcess(argumentsNames: string[]): ParsedArgumentType {
+  return argumentsNames.reduce((allArguments, currentArgument) => {
+    const searchedArgument = process.argv.find(e => e.includes(currentArgument))
+    return {
+      ...allArguments,
+      ...parseProcessArgumentToObject(searchedArgument)
+    }
+  }, {})
+}
+
+function parseProcessArgumentToObject(processArgument: string): ParsedArgumentType {
   if (!processArgument) return {}
   const [key, val] = processArgument.split('=')
   const parsedValue = val.includes('[') ? parseTextToArray(val) : val
