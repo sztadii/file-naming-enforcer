@@ -94,5 +94,31 @@
   "dependencies": {
     "find": "^0.3.0",
     "lodash": "^4.17.20"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "semi": false
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "plugins": ["jest"],
+    "extends": ["eslint:recommended", "plugin:jest/recommended"],
+    "env": {
+      "es6": true,
+      "node": true,
+      "jest": true
+    },
+    "rules": {
+      "no-console": "off"
+    }
+  },
+  "babel": {
+    "presets": ["@babel/preset-env", "@babel/preset-typescript"],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
   }
 }
