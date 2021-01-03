@@ -27,6 +27,7 @@ jobs:
       - name: Checking typescript types and build app
         run: npm run build
 
-      # .github folder contains files saved only in kebab-convention
-      - name: Validate .github folder with current convention
-        run: npm run validate-github-folder
+      - name: Check if the script works with production dependencies
+        run: |
+          npm prune --production
+          node dist type=kebabCase folder=./.github
