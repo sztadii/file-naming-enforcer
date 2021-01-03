@@ -19,7 +19,6 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "start": "concurrently -k -r -s first \"npm run lint-watch\" \"npm run test-watch\"",
-    "validate-github-folder": "node dist type=kebabCase folder=./.github",
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "npm run clean && tsc --project ./tsconfig.build.json",
