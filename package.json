@@ -37,6 +37,11 @@
       "pre-commit": "lint-staged"
     }
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "lint-staged": {
     "*.ts": [
       "npm run lint",
@@ -65,6 +70,8 @@
     }
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@getvim/execute": "^1.0.0",
     "@types/find": "^0.2.1",
     "@types/jest": "^26.0.19",
@@ -80,10 +87,10 @@
     "lint-staged": "^8.1.0",
     "prettier": "^1.19.1",
     "regenerator-runtime": "^0.13.7",
+    "semantic-release": "^17.4.4",
     "ts-jest": "^26.4.4",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.7",
-    "semantic-release": "^17.4.4"
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "find": "^0.3.0",
