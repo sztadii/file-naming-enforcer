@@ -1,6 +1,6 @@
-name: Quality check
+name: Main workflow
 
-on: [push]
+on: push
 
 jobs:
   build-and-test:
@@ -21,9 +21,6 @@ jobs:
       - name: Integration tests
         run: npm run test
 
-      - name: Checking packages security
-        run: npm audit --audit-level=moderate
-
       - name: Checking typescript types and build app
         run: npm run build
 
@@ -31,3 +28,10 @@ jobs:
         run: |
           npm prune --production
           node dist type=kebabCase folder=./.github
+
+      # semantic-release release only from master branch, so do not be worry
+      - name: Publish to NPM
+        run: npx semantic-release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
