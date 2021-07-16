@@ -4,11 +4,11 @@ import * as lodash from 'lodash'
 const defaultIgnores = [
   'node_modules',
   '.git',
-  'idea',
+  'idea', // Jetbrains cache folder
   'index',
   'README',
   'Dockerfile',
-  'setupProxy'
+  'setupProxy' // create-react-app proxy file
 ]
 
 export async function fileNamingEnforcer(): Promise<void> {
