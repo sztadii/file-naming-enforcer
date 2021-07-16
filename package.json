@@ -21,7 +21,7 @@
     "start": "concurrently -k -r -s first \"npm run lint-watch\" \"npm run test-watch\"",
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "npm run clean && tsc --project ./tsconfig.build.json",
+    "build": "tsc --project ./tsconfig.build.json",
     "lint": "esw \"./**/*.ts\" --ignore-path .gitignore --color --max-warnings 0",
     "lint-watch": "esw \"./**/*.ts\" --ignore-path .gitignore --color --watch --cache",
     "format": "prettier \"src/**/*.ts\" --write",
