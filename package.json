@@ -2,7 +2,7 @@
   "name": "file-naming-enforcer",
   "version": "0.0.0-development",
   "description": "Enforce developers to use only one file naming convention inside the project",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "author": "sztadii",
   "license": "ISC",
   "homepage": "https://github.com/sztadii/file-naming-enforcer",
@@ -21,7 +21,7 @@
     "start": "concurrently -k -r -s first \"npm run lint-watch\" \"npm run test-watch\"",
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "tsc --project ./tsconfig.build.json",
+    "build": "npm run clean && tsc --project ./tsconfig.build.json",
     "lint": "esw \"./**/*.ts\" --ignore-path .gitignore --color --max-warnings 0",
     "lint-watch": "esw \"./**/*.ts\" --ignore-path .gitignore --color --watch --cache",
     "format": "prettier \"src/**/*.ts\" --write",
@@ -30,7 +30,7 @@
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "file-naming-enforcer": "./dist/index.js"
+    "file-naming-enforcer": "dist/index.js"
   },
   "husky": {
     "hooks": {
