@@ -2,8 +2,8 @@
 
 ## Problem to solve
 
-If your team wants to follow some file name conventions, <br />
-like a capital case for classes for components or kebab case for styles or any other, <br />
+If your team wants to follow any file naming convention, <br />
+like a capital case for classes / components or kebab case for styles etc, <br />
 then you should automate it and forget about the unnecessary discussion during code review. <br />
 
 ## How to install
