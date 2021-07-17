@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "target": "es6",
     "module": "commonjs",
-    "declaration": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true
-  }
+    "outDir": "dist",
+    "sourceMap": false
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 }

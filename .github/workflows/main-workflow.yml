@@ -24,11 +24,6 @@ jobs:
       - name: Checking typescript types and build app
         run: npm run build
 
-      - name: Check if the script works with production dependencies
-        run: |
-          npm prune --production
-          node dist type=kebabCase folder=./.github
-
       # semantic-release release only from master branch, so do not be worry
       - name: Publish to NPM
         run: npx semantic-release
