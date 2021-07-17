@@ -30,7 +30,8 @@
     "semantic-release": "semantic-release"
   },
   "bin": {
-    "file-naming-enforcer": "dist/index.js"
+    "file-naming-enforcer": "dist/index.js",
+    "fne": "dist/index.js"
   },
   "husky": {
     "hooks": {

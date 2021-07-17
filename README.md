@@ -23,6 +23,11 @@ npm i -D file-naming-enforcer
 }
 ```
 
+PS. You can also use shortcut `fne`
+```
+fne type=capitalize folder=./src/components ext=js
+```
+
 ## Expected result:
 
 Once everything will be set up properly, <br />
