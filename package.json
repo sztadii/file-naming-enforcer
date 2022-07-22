@@ -79,6 +79,7 @@
     "@types/lodash": "^4.14.160",
     "@types/node": "^11.15.20",
     "@typescript-eslint/parser": "^4.11.1",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
     "concurrently": "^4.1.0",
     "eslint": "^5.11.1",
     "eslint-plugin-jest": "^22.21.0",
@@ -98,7 +99,6 @@
     "lodash": "^4.17.20"
   },
   "prettier": {
-    "printWidth": 100,
     "tabWidth": 2,
     "singleQuote": true,
     "trailingComma": "none",
@@ -111,7 +111,8 @@
     ],
     "extends": [
       "eslint:recommended",
-      "plugin:jest/recommended"
+      "plugin:jest/recommended",
+      "plugin:@typescript-eslint/eslint-recommended"
     ],
     "env": {
       "es6": true,
@@ -119,7 +120,8 @@
       "jest": true
     },
     "rules": {
-      "no-console": "off"
+      "no-console": "off",
+      "no-unused-vars": "off"
     }
   },
   "repository": {
