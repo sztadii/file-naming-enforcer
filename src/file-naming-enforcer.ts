@@ -1,115 +1,96 @@
-import * as find from 'find'
 import * as lodash from 'lodash'
+import { ProcessService, FileService, Logger } from './services'
 
-const defaultIgnores = [
+export default class FileNamingEnforcer {
+  constructor(
+    private processService: ProcessService,
+    private fileService: FileService,
+    private logger: Logger,
+    private ignoredFiles: string[] = DEFAULT_IGNORED_FILES
+  ) {}
+
+  public async validateInCLI(processArgs: string) {
+    try {
+      const message = await this.validate(processArgs)
+      this.logger.log(message)
+    } catch (e) {
+      this.logger.log(e.message)
+      this.processService.failProcess()
+    }
+  }
+
+  public async validate(processArgs: string) {
+    const processArguments = this.processService.getArguments<
+      ProcessRequestedArguments
+    >(processArgs, ['folder', 'ext', 'type', 'ignore'])
+
+    const { folder = './', ext = '*', type, ignore = [] } = processArguments
+
+    if (!type) {
+      throw new Error('Uuu, `type` argument is missing')
+    }
+
+    const validateFunction = lodash[type]
+
+    if (!validateFunction) {
+      throw new Error(`Uuu, we do not support ${type}`)
+    }
+
+    let files: string[] = []
+
+    try {
+      files = await this.fileService.getFiles(folder, ext)
+    } catch (e) {
+      throw new Error(
+        `Uuu, folder ${folder} is empty, please take a look on that`
+      )
+    }
+
+    if (!files.length) {
+      throw new Error(
+        `Uuu, in folder ${folder} we could not find any file with .${ext} extension`
+      )
+    }
+
+    const ignores = [...this.ignoredFiles, ...ignore]
+
+    const elementsToCompare = files
+      .filter(file => !ignores.find(ignore => file.includes(ignore)))
+      .map(file => {
+        return {
+          originalPath: file,
+          toCompare: file.replace(/\./g, '').split('/')
+        }
+      })
+
+    const elementsWithWrongValues = elementsToCompare.filter(e =>
+      e.toCompare.find(e => validateFunction(e) !== e)
+    )
+
+    if (elementsWithWrongValues.length) {
+      const paths = elementsWithWrongValues.map(e => e.originalPath)
+      const messageBase = `Uuu, some files are not following your project naming convention (${type}). Please take a look on below files: `
+      const pathsText = paths.join(', ')
+      throw new Error(messageBase + pathsText)
+    }
+
+    return 'Great, everything looks fine :)'
+  }
+}
+
+interface ProcessRequestedArguments {
+  folder: string
+  ext: string
+  type: string
+  ignore: string[]
+}
+
+const DEFAULT_IGNORED_FILES = [
   'node_modules',
   '.git',
-  'idea', // Jetbrains cache folder
+  'idea',
   'index',
   'README',
   'Dockerfile',
-  'setupProxy' // create-react-app proxy file
+  'setupProxy'
 ]
-
-export async function fileNamingEnforcer(): Promise<void> {
-  const parsedArgumentsFromProcess = getParsedArgumentsFromProcess([
-    'folder',
-    'ext',
-    'type',
-    'ignore'
-  ])
-
-  const { folder = './', ext = '*', type, ignore = [] } = parsedArgumentsFromProcess
-
-  if (!type) {
-    exitProcessWithMessage('Uuu, `type` argument is missing')
-  }
-
-  const validateFunction = lodash[type.toString()]
-
-  if (!validateFunction) {
-    exitProcessWithMessage(`Uuu, we do not support ${type}`)
-  }
-
-  let files: string[] = []
-
-  try {
-    files = await getFiles(folder.toString(), ext.toString())
-  } catch (e) {
-    exitProcessWithMessage(`Uuu, folder ${folder} is empty, please take a look on that`)
-  }
-
-  if (!files.length) {
-    exitProcessWithMessage(
-      `Uuu, in folder ${folder} we could not find any file with .${ext} extension`
-    )
-  }
-
-  const ignores = [...defaultIgnores, ...ignore]
-
-  const elementsToCompare = files
-    .filter(file => !ignores.find(ignore => file.includes(ignore)))
-    .map(file => {
-      return {
-        originalPath: file,
-        toCompare: file.replace(/\./g, '').split('/')
-      }
-    })
-
-  const elementsWithWrongValues = elementsToCompare.filter(e =>
-    e.toCompare.find(e => validateFunction(e) !== e)
-  )
-
-  if (elementsWithWrongValues.length) {
-    const paths = elementsWithWrongValues.map(e => e.originalPath)
-    exitProcessWithMessage(
-      `Uuu, some files are not following your project naming convention (${type}). Please take a look on below files`,
-      paths
-    )
-  }
-
-  console.log('Great, everything looks fine :)')
-}
-
-function exitProcessWithMessage(...message): void {
-  console.log('------')
-  console.log(...message)
-  console.log('------\n')
-  process.exit(1)
-}
-
-function getFiles(folder: string, ext: string): Promise<string[]> {
-  return new Promise((resolve, reject) =>
-    find.file(new RegExp(`\\.${ext}$`), folder, resolve).error(reject)
-  )
-}
-
-type ParsedArgumentType = {
-  [key: string]: string | string[]
-}
-
-export function getParsedArgumentsFromProcess(argumentsNames: string[]): ParsedArgumentType {
-  return argumentsNames.reduce((allArguments, currentArgument) => {
-    const searchedArgument = process.argv.find(e => e.includes(currentArgument))
-    return {
-      ...allArguments,
-      ...parseProcessArgumentToObject(searchedArgument)
-    }
-  }, {})
-}
-
-function parseProcessArgumentToObject(processArgument: string): ParsedArgumentType {
-  if (!processArgument) return {}
-  const [key, val] = processArgument.split('=')
-  const parsedValue = val.includes('[') ? parseTextToArray(val) : val
-  return {
-    [key]: parsedValue
-  }
-}
-
-function parseTextToArray(text: string): string[] {
-  return text
-    .replace('[', '')
-    .replace(']', '')
-    .split(',')
-}

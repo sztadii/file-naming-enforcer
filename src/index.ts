@@ -1,4 +1,15 @@
 #!/usr/bin/env node
 
-import { fileNamingEnforcer } from './file-naming-enforcer'
-fileNamingEnforcer()
+import FileNamingEnforcer from './file-naming-enforcer'
+import { ProcessService, FileService, Logger } from './services'
+
+async function run() {
+  const fileNamingEnforcer = new FileNamingEnforcer(
+    new ProcessService(),
+    new FileService(),
+    new Logger()
+  )
+  await fileNamingEnforcer.validateInCLI(process.argv.join(' '))
+}
+
+run()
