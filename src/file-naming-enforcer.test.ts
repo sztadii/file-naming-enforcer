@@ -12,8 +12,8 @@ describe('fileNamingEnforcer function', () => {
   )
 
   beforeEach(() => {
-    jest.spyOn(processService, 'killProcess').mockImplementation(jest.fn)
-    jest.spyOn(logger, 'log').mockImplementation(jest.fn)
+    jest.spyOn(processService, 'killProcess').mockImplementation()
+    jest.spyOn(logger, 'log').mockImplementation()
   })
 
   afterEach(() => {
