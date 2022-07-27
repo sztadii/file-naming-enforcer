@@ -76,7 +76,6 @@ export class FileService {
 
   public async removeFolder(folder: string | RegExp) {
     if (typeof folder === 'string') {
-      // @ts-ignore
       await fs.promises.rmdir(folder, { recursive: true })
       return
     }
