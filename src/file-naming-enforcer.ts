@@ -30,10 +30,23 @@ export default class FileNamingEnforcer {
       throw new Error('Uuu, `type` argument is missing')
     }
 
-    const validateFunction = lodash[type]
+    const validateFunctions = {
+      camelCase: lodash.camelCase,
+      kebabCase: lodash.kebabCase,
+      lowerCase: lodash.lowerCase,
+      snakeCase: lodash.snakeCase,
+      startCase: lodash.startCase,
+      upperCase: lodash.upperCase,
+      capitalize: lodash.capitalize
+    }
+
+    const validateFunction = validateFunctions[type]
 
     if (!validateFunction) {
-      throw new Error(`Uuu, we do not support ${type}`)
+      const supportedTypes = Object.keys(validateFunctions).join(', ')
+      throw new Error(
+        `Uuu, we do not support ${type} type. We only support ${supportedTypes}.`
+      )
     }
 
     let files: string[] = []
