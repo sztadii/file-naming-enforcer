@@ -91,7 +91,9 @@ describe('fileNamingEnforcer function', () => {
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
-    expect(logger.log).toHaveBeenCalledWith('Uuu, we do not support newCase')
+    expect(logger.log).toHaveBeenCalledWith(
+      'Uuu, we do not support newCase type. We only support camelCase, kebabCase, lowerCase, snakeCase, startCase, upperCase, capitalize.'
+    )
   })
 
   it('when a folder is empty then we display a error message and kill a process', async () => {
