@@ -1,4 +1,5 @@
 import * as find from 'find'
+import * as fs from 'fs'
 
 export class ProcessService {
   public failProcess(): void {
@@ -52,6 +53,30 @@ export class FileService {
     return new Promise((resolve, reject) =>
       find.file(new RegExp(`\\.${ext}$`), folder, resolve).error(reject)
     )
+  }
+
+  public async createFile(
+    folder: string,
+    fileName: string,
+    content = 'Random content'
+  ): Promise<void> {
+    if (!this.hasFolder(folder)) {
+      await this.createFolder(folder)
+    }
+    await fs.writeFile(`${folder}/${fileName}`, content, () => {})
+  }
+
+  public hasFolder(folder: string): boolean {
+    return fs.existsSync(folder)
+  }
+
+  public async createFolder(folder: string) {
+    await fs.promises.mkdir(folder)
+  }
+
+  public async removeFolder(folder: string) {
+    // @ts-ignore
+    await fs.promises.rmdir(folder, { recursive: true })
   }
 }
 

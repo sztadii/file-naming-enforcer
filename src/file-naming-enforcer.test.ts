@@ -26,46 +26,63 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
+    const folderName = 'mocks-1'
+    await fileService.createFile(folderName, 'file-one.js')
+    await fileService.createFile(folderName, 'file-two.js')
+    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+
     await fileNamingEnforcer.validate(
-      'type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
+      `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
+    await fileService.removeFolder(folderName)
+
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
   it('by default ignore some files and allow to ignore other', async () => {
-    // Below files are part of defaultIgnores
-    require('../mocks/README.md')
-    require('../mocks/module/Dockerfile')
-    require('../mocks/module/setupProxy.js')
-
-    // Below file will be ignored
-    require('../mocks/SIMPLE-READ.md')
+    const folderName = 'mocks-2'
+    await fileService.createFile(folderName, 'README.md')
+    await fileService.createFile(folderName, 'Dockerfile')
+    await fileService.createFile(folderName, 'setupProxy.js')
+    await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
     await fileNamingEnforcer.validate(
-      'type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
+      `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
+    await fileService.removeFolder(folderName)
+
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
   it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
-    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks')
+    const folderName = 'mocks-3'
+    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+
+    await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
+    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
-      `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files: mocks/SIMPLE-READ.md`
+      `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files: ${folderName}/SIMPLE-READ.md`
     )
   })
 
   it('when a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
-    await fileNamingEnforcer.validate('folder=./mocks type=capitalize')
+    const folderName = 'mocks-4'
+    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+    await fileService.createFile(folderName, 'simple-js-file.js')
+    await fileService.createFile(folderName, 'some-scss-file.sass')
+
+    await fileNamingEnforcer.validate(`folder=./${folderName} type=capitalize`)
+    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
-      `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files: mocks/SIMPLE-READ.md, mocks/simple-js-file.js, mocks/some-scss-file.sass`
+      `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files: ${folderName}/SIMPLE-READ.md, ${folderName}/simple-js-file.js, ${folderName}/some-scss-file.sass`
     )
   })
 
@@ -88,17 +105,31 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when we could not find any file with provided extension', async () => {
-    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks ext=tsx')
+    const folderName = 'mocks-5'
+    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+    await fileService.createFile(folderName, 'simple-js-file.js')
+
+    await fileNamingEnforcer.validate(
+      `type=kebabCase folder=./${folderName} ext=tsx`
+    )
+    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
-      'Uuu, in folder ./mocks we could not find any file with .tsx extension'
+      `Uuu, in folder ./${folderName} we could not find any file with .tsx extension`
     )
   })
 
   it('when searched files are correct then we display a success message', async () => {
-    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks ext=sass')
+    const folderName = 'mocks-6'
+    await fileService.createFile(folderName, 'simple-styles.sass')
+    await fileService.createFile(folderName, 'other-styles.sass')
+
+    await fileNamingEnforcer.validate(
+      `type=kebabCase folder=./${folderName} ext=sass`
+    )
+    await fileService.removeFolder(folderName)
 
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
