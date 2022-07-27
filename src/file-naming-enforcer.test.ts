@@ -12,9 +12,13 @@ describe('fileNamingEnforcer function', () => {
   )
 
   beforeEach(() => {
-    jest.clearAllMocks()
     jest.spyOn(processService, 'failProcess').mockImplementation(jest.fn)
     jest.spyOn(logger, 'log').mockImplementation(jest.fn)
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+    fileService.removeFolder(/mocks-/)
   })
 
   it('when type is missing then we display an error message and kill a process', async () => {
@@ -34,7 +38,6 @@ describe('fileNamingEnforcer function', () => {
     await fileNamingEnforcer.validate(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
-    await fileService.removeFolder(folderName)
 
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
@@ -50,7 +53,6 @@ describe('fileNamingEnforcer function', () => {
     await fileNamingEnforcer.validate(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
-    await fileService.removeFolder(folderName)
 
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
@@ -61,7 +63,6 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
     await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
-    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -77,7 +78,6 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'some-scss-file.sass')
 
     await fileNamingEnforcer.validate(`folder=./${folderName} type=capitalize`)
-    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -112,7 +112,6 @@ describe('fileNamingEnforcer function', () => {
     await fileNamingEnforcer.validate(
       `type=kebabCase folder=./${folderName} ext=tsx`
     )
-    await fileService.removeFolder(folderName)
 
     expect(processService.failProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -129,7 +128,6 @@ describe('fileNamingEnforcer function', () => {
     await fileNamingEnforcer.validate(
       `type=kebabCase folder=./${folderName} ext=sass`
     )
-    await fileService.removeFolder(folderName)
 
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
