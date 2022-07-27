@@ -14,7 +14,7 @@ export default class FileNamingEnforcer {
       this.logger.log(message)
     } catch (e) {
       this.logger.log(e.message)
-      this.processService.failProcess()
+      this.processService.killProcess()
     }
   }
 

@@ -12,7 +12,7 @@ describe('fileNamingEnforcer function', () => {
   )
 
   beforeEach(() => {
-    jest.spyOn(processService, 'failProcess').mockImplementation(jest.fn)
+    jest.spyOn(processService, 'killProcess').mockImplementation(jest.fn)
     jest.spyOn(logger, 'log').mockImplementation(jest.fn)
   })
 
@@ -24,7 +24,7 @@ describe('fileNamingEnforcer function', () => {
   it('when type is missing then we display an error message and kill a process', async () => {
     await fileNamingEnforcer.validate('folder=./mocks')
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Uuu, `type` argument is missing')
   })
@@ -64,7 +64,7 @@ describe('fileNamingEnforcer function', () => {
 
     await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
       `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files: ${folderName}/SIMPLE-READ.md`
@@ -79,7 +79,7 @@ describe('fileNamingEnforcer function', () => {
 
     await fileNamingEnforcer.validate(`folder=./${folderName} type=capitalize`)
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
       `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files: ${folderName}/SIMPLE-READ.md, ${folderName}/simple-js-file.js, ${folderName}/some-scss-file.sass`
@@ -89,7 +89,7 @@ describe('fileNamingEnforcer function', () => {
   it('when a project convention is not supported then we display an error message and kill a process', async () => {
     await fileNamingEnforcer.validate('folder=./mocks type=newCase')
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
       'Uuu, we do not support newCase type. We only support camelCase, kebabCase, lowerCase, snakeCase, startCase, upperCase, capitalize.'
@@ -99,7 +99,7 @@ describe('fileNamingEnforcer function', () => {
   it('when a folder is empty then we display a error message and kill a process', async () => {
     await fileNamingEnforcer.validate('type=kebabCase folder=./xxx')
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
       'Uuu, folder ./xxx is empty, please take a look on that'
@@ -115,7 +115,7 @@ describe('fileNamingEnforcer function', () => {
       `type=kebabCase folder=./${folderName} ext=tsx`
     )
 
-    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
       `Uuu, in folder ./${folderName} we could not find any file with .tsx extension`

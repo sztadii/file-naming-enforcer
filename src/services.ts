@@ -2,7 +2,7 @@ import * as find from 'find'
 import * as fs from 'fs'
 
 export class ProcessService {
-  public failProcess(): void {
+  public killProcess(): void {
     process.exit(1)
   }
 
