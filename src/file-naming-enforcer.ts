@@ -5,8 +5,7 @@ export default class FileNamingEnforcer {
   constructor(
     private processService: ProcessService,
     private fileService: FileService,
-    private logger: Logger,
-    private ignoredFiles: string[] = DEFAULT_IGNORED_FILES
+    private logger: Logger
   ) {}
 
   public async validate(processArgs: string) {
@@ -65,7 +64,7 @@ export default class FileNamingEnforcer {
       )
     }
 
-    const ignores = [...this.ignoredFiles, ...ignore]
+    const ignores = [...DEFAULT_IGNORED_FILES, ...ignore]
 
     const elementsToCompare = files
       .filter(file => !ignores.find(ignore => file.includes(ignore)))
