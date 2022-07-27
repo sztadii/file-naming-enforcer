@@ -2,27 +2,35 @@ import FileNamingEnforcer from './file-naming-enforcer'
 import { FileService, ProcessService, Logger } from './services'
 
 describe('fileNamingEnforcer function', () => {
+  const processService = new ProcessService()
+  const fileService = new FileService()
+  const logger = new Logger()
   const fileNamingEnforcer = new FileNamingEnforcer(
-    new ProcessService(),
-    new FileService(),
-    new Logger()
+    processService,
+    fileService,
+    logger
   )
 
-  it('when type is missing then we display an error message and kill a process', async () => {
-    try {
-      await fileNamingEnforcer.validate('folder=./mocks')
-    } catch (e) {
-      expect(e.message).toContain('Uuu, `type` argument is missing')
-    }
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.spyOn(processService, 'failProcess').mockImplementation(jest.fn)
+    jest.spyOn(logger, 'log').mockImplementation(jest.fn)
+  })
 
-    expect.assertions(1)
+  it('when type is missing then we display an error message and kill a process', async () => {
+    await fileNamingEnforcer.validate('folder=./mocks')
+
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Uuu, `type` argument is missing')
   })
 
   it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
-    const message = await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.validate(
       'type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
     )
-    expect(message).toBe('Great, everything looks fine :)')
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
   it('by default ignore some files and allow to ignore other', async () => {
@@ -34,74 +42,65 @@ describe('fileNamingEnforcer function', () => {
     // Below file will be ignored
     require('../mocks/SIMPLE-READ.md')
 
-    const message = await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.validate(
       'type=kebabCase folder=./mocks ignore=[SIMPLE-READ.md]'
     )
-    expect(message).toContain('Great, everything looks fine :)')
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
   it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
-    try {
-      await fileNamingEnforcer.validate('type=kebabCase folder=./mocks')
-    } catch (e) {
-      expect(e.message).toContain(
-        `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files: mocks/SIMPLE-READ.md`
-      )
-    }
+    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks')
 
-    expect.assertions(1)
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith(
+      `Uuu, some files are not following your project naming convention (kebabCase). Please take a look on below files: mocks/SIMPLE-READ.md`
+    )
   })
 
   it('when a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
-    try {
-      await fileNamingEnforcer.validate('folder=./mocks type=capitalize')
-    } catch (e) {
-      expect(e.message).toContain(
-        `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files: mocks/SIMPLE-READ.md, mocks/simple-js-file.js, mocks/some-scss-file.sass`
-      )
-    }
+    await fileNamingEnforcer.validate('folder=./mocks type=capitalize')
 
-    expect.assertions(1)
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith(
+      `Uuu, some files are not following your project naming convention (capitalize). Please take a look on below files: mocks/SIMPLE-READ.md, mocks/simple-js-file.js, mocks/some-scss-file.sass`
+    )
   })
 
   it('when a project convention is not supported then we display an error message and kill a process', async () => {
-    try {
-      await fileNamingEnforcer.validate('folder=./mocks type=newCase')
-    } catch (e) {
-      expect(e.message).toContain('Uuu, we do not support newCase')
-    }
+    await fileNamingEnforcer.validate('folder=./mocks type=newCase')
 
-    expect.assertions(1)
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Uuu, we do not support newCase')
   })
 
   it('when a folder is empty then we display a error message and kill a process', async () => {
-    try {
-      await fileNamingEnforcer.validate('type=kebabCase folder=./xxx')
-    } catch (e) {
-      expect(e.message).toContain(
-        'Uuu, folder ./xxx is empty, please take a look on that'
-      )
-    }
+    await fileNamingEnforcer.validate('type=kebabCase folder=./xxx')
 
-    expect.assertions(1)
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith(
+      'Uuu, folder ./xxx is empty, please take a look on that'
+    )
   })
 
   it('when we could not find any file with provided extension', async () => {
-    try {
-      await fileNamingEnforcer.validate('type=kebabCase folder=./mocks ext=tsx')
-    } catch (e) {
-      expect(e.message).toContain(
-        'Uuu, in folder ./mocks we could not find any file with .tsx extension'
-      )
-    }
+    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks ext=tsx')
 
-    expect.assertions(1)
+    expect(processService.failProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith(
+      'Uuu, in folder ./mocks we could not find any file with .tsx extension'
+    )
   })
 
   it('when searched files are correct then we display a success message', async () => {
-    const result = await fileNamingEnforcer.validate(
-      'type=kebabCase folder=./mocks ext=sass'
-    )
-    expect(result).toContain('Great, everything looks fine :)')
+    await fileNamingEnforcer.validate('type=kebabCase folder=./mocks ext=sass')
+
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 })

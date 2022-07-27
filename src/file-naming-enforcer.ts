@@ -9,9 +9,9 @@ export default class FileNamingEnforcer {
     private ignoredFiles: string[] = DEFAULT_IGNORED_FILES
   ) {}
 
-  public async validateInCLI(processArgs: string) {
+  public async validate(processArgs: string) {
     try {
-      const message = await this.validate(processArgs)
+      const message = await this.validateArgs(processArgs)
       this.logger.log(message)
     } catch (e) {
       this.logger.log(e.message)
@@ -19,7 +19,7 @@ export default class FileNamingEnforcer {
     }
   }
 
-  public async validate(processArgs: string) {
+  private async validateArgs(processArgs: string) {
     const processArguments = this.processService.getArguments<
       ProcessRequestedArguments
     >(processArgs, ['folder', 'ext', 'type', 'ignore'])
