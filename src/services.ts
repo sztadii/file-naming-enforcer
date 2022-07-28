@@ -11,20 +11,15 @@ export class ProcessService {
     argumentsNames: Array<keyof T>
   ): T {
     const processArgsList = processArgs.split(' ')
-    const parsedArguments = argumentsNames.reduce(
-      (allArguments, currentArgument) => {
-        const searchedArgument = processArgsList.find(e =>
-          e.includes(currentArgument.toString())
-        )
-        return {
-          ...allArguments,
-          ...this.parseProcessArgumentToObject(searchedArgument)
-        }
-      },
-      {}
-    ) as T
-
-    return parsedArguments
+    return argumentsNames.reduce((allArguments, currentArgument) => {
+      const searchedArgument = processArgsList.find(e =>
+        e.includes(currentArgument.toString())
+      )
+      return {
+        ...allArguments,
+        ...this.parseProcessArgumentToObject(searchedArgument)
+      }
+    }, {}) as T
   }
 
   private parseProcessArgumentToObject(processArgument: string): JSONObject {
