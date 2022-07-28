@@ -22,7 +22,7 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when type is missing then we display an error message and kill a process', async () => {
-    await fileNamingEnforcer.validate('folder=./mocks')
+    await fileNamingEnforcer.enforce('folder=./mocks')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -35,7 +35,7 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'file-two.js')
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
-    await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
 
@@ -50,7 +50,7 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'setupProxy.js')
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
-    await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
 
@@ -62,7 +62,7 @@ describe('fileNamingEnforcer function', () => {
     const folderName = 'mocks-3'
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
-    await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
+    await fileNamingEnforcer.enforce(`type=kebabCase folder=./${folderName}`)
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -77,7 +77,7 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'simple-js-file.js')
     await fileService.createFile(folderName, 'some-scss-file.sass')
 
-    await fileNamingEnforcer.validate(`folder=./${folderName} type=capitalize`)
+    await fileNamingEnforcer.enforce(`folder=./${folderName} type=capitalize`)
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -87,7 +87,7 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when a project convention is not supported then we display an error message and kill a process', async () => {
-    await fileNamingEnforcer.validate('folder=./mocks type=newCase')
+    await fileNamingEnforcer.enforce('folder=./mocks type=newCase')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -99,7 +99,7 @@ describe('fileNamingEnforcer function', () => {
   it('when a folder is empty then we display a error message and kill a process', async () => {
     const folderName = 'mocks-5'
     await fileService.createFolder(folderName)
-    await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
+    await fileNamingEnforcer.enforce(`type=kebabCase folder=./${folderName}`)
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -109,7 +109,7 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when a folder does not exist we display a error message and kill a process', async () => {
-    await fileNamingEnforcer.validate('type=kebabCase folder=./xxx')
+    await fileNamingEnforcer.enforce('type=kebabCase folder=./xxx')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
@@ -123,7 +123,7 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
     await fileService.createFile(folderName, 'simple-js-file.js')
 
-    await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ext=tsx`
     )
 
@@ -139,7 +139,7 @@ describe('fileNamingEnforcer function', () => {
     await fileService.createFile(folderName, 'simple-styles.sass')
     await fileService.createFile(folderName, 'other-styles.sass')
 
-    await fileNamingEnforcer.validate(
+    await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ext=sass`
     )
 

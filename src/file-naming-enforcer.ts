@@ -8,9 +8,9 @@ export default class FileNamingEnforcer {
     private logger: Logger
   ) {}
 
-  public async validate(processArgs: string) {
+  public async enforce(processArgs: string) {
     try {
-      const message = await this.validateArgs(processArgs)
+      const message = await this.getEnforceMessage(processArgs)
       this.logger.log(message)
     } catch (e) {
       this.logger.log(e.message)
@@ -18,7 +18,7 @@ export default class FileNamingEnforcer {
     }
   }
 
-  private async validateArgs(processArgs: string) {
+  private async getEnforceMessage(processArgs: string) {
     const processArguments = this.processService.getArguments<
       ProcessRequestedArguments
     >(processArgs, ['folder', 'ext', 'type', 'ignore'])

@@ -9,7 +9,7 @@ async function run() {
     new FileService(),
     new Logger()
   )
-  await fileNamingEnforcer.validate(process.argv.join(' '))
+  await fileNamingEnforcer.enforce(process.argv.join(' '))
 }
 
 run()
