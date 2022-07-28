@@ -48,11 +48,17 @@ export default class FileNamingEnforcer {
       )
     }
 
-    let files: string[] = []
+    const hasFolder = this.fileService.hasFolder(folder)
 
-    try {
-      files = await this.fileService.getFiles(folder, ext)
-    } catch (e) {
+    if (!hasFolder) {
+      throw new Error(
+        `Uuu, folder ${folder} does not exist, please take a look on that`
+      )
+    }
+
+    const files = await this.fileService.getFiles(folder, ext)
+
+    if (!files.length && ext === '*') {
       throw new Error(
         `Uuu, folder ${folder} is empty, please take a look on that`
       )

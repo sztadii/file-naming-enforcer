@@ -97,17 +97,29 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when a folder is empty then we display a error message and kill a process', async () => {
+    const folderName = 'mocks-5'
+    await fileService.createFolder(folderName)
+    await fileNamingEnforcer.validate(`type=kebabCase folder=./${folderName}`)
+
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith(
+      `Uuu, folder ./${folderName} is empty, please take a look on that`
+    )
+  })
+
+  it('when a folder does not exist we display a error message and kill a process', async () => {
     await fileNamingEnforcer.validate('type=kebabCase folder=./xxx')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith(
-      'Uuu, folder ./xxx is empty, please take a look on that'
+      'Uuu, folder ./xxx does not exist, please take a look on that'
     )
   })
 
   it('when we could not find any file with provided extension', async () => {
-    const folderName = 'mocks-5'
+    const folderName = 'mocks-6'
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
     await fileService.createFile(folderName, 'simple-js-file.js')
 
@@ -123,7 +135,7 @@ describe('fileNamingEnforcer function', () => {
   })
 
   it('when searched files are correct then we display a success message', async () => {
-    const folderName = 'mocks-6'
+    const folderName = 'mocks-7'
     await fileService.createFile(folderName, 'simple-styles.sass')
     await fileService.createFile(folderName, 'other-styles.sass')
 
