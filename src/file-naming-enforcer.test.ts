@@ -31,9 +31,11 @@ describe('fileNamingEnforcer function', () => {
 
   it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
     const folderName = 'mocks-1'
-    await fileService.createFile(folderName, 'file-one.js')
-    await fileService.createFile(folderName, 'file-two.js')
-    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+    await fileService.createFiles(folderName, [
+      'file-one.js',
+      'file-two.js',
+      'SIMPLE-READ.md'
+    ])
 
     await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
@@ -45,10 +47,12 @@ describe('fileNamingEnforcer function', () => {
 
   it('by default ignore some files and allow to ignore other', async () => {
     const folderName = 'mocks-2'
-    await fileService.createFile(folderName, 'README.md')
-    await fileService.createFile(folderName, 'Dockerfile')
-    await fileService.createFile(folderName, 'setupProxy.js')
-    await fileService.createFile(folderName, 'SIMPLE-READ.md')
+    await fileService.createFiles(folderName, [
+      'README.md',
+      'Dockerfile',
+      'setupProxy.js',
+      'SIMPLE-READ.md'
+    ])
 
     await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
@@ -73,9 +77,11 @@ describe('fileNamingEnforcer function', () => {
 
   it('when a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
     const folderName = 'mocks-4'
-    await fileService.createFile(folderName, 'SIMPLE-READ.md')
-    await fileService.createFile(folderName, 'simple-js-file.js')
-    await fileService.createFile(folderName, 'some-scss-file.sass')
+    await fileService.createFiles(folderName, [
+      'SIMPLE-READ.md',
+      'simple-js-file.js',
+      'some-scss-file.sass'
+    ])
 
     await fileNamingEnforcer.enforce(`folder=./${folderName} type=capitalize`)
 
@@ -120,8 +126,10 @@ describe('fileNamingEnforcer function', () => {
 
   it('when we could not find any file with provided extension', async () => {
     const folderName = 'mocks-6'
-    await fileService.createFile(folderName, 'SIMPLE-READ.md')
-    await fileService.createFile(folderName, 'simple-js-file.js')
+    await fileService.createFiles(folderName, [
+      'SIMPLE-READ.md',
+      'simple-js-file.js'
+    ])
 
     await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ext=tsx`
@@ -136,8 +144,10 @@ describe('fileNamingEnforcer function', () => {
 
   it('when searched files are correct then we display a success message', async () => {
     const folderName = 'mocks-7'
-    await fileService.createFile(folderName, 'simple-styles.sass')
-    await fileService.createFile(folderName, 'other-styles.sass')
+    await fileService.createFiles(folderName, [
+      'simple-styles.sass',
+      'other-styles.sass'
+    ])
 
     await fileNamingEnforcer.enforce(
       `type=kebabCase folder=./${folderName} ext=sass`

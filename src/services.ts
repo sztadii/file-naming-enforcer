@@ -50,6 +50,12 @@ export class FileService {
     )
   }
 
+  public async createFiles(folder: string, fileNames: string[]) {
+    for (const fileName of fileNames) {
+      await this.createFile(folder, fileName)
+    }
+  }
+
   public async createFile(
     folder: string,
     fileName: string,
@@ -82,7 +88,7 @@ export class FileService {
     await Promise.all(filteredFolders.map(this.removeFolder))
   }
 
-  public async getFoldersNames(rootFolder: string): Promise<string[]> {
+  private async getFoldersNames(rootFolder: string): Promise<string[]> {
     const files = await fs.promises.readdir(rootFolder, { withFileTypes: true })
 
     return files
