@@ -13,7 +13,7 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@main
         with:
-          node-version-file: 'package.json'
+          node-version-file: '.nvmrc'
 
       - name: Dependency installation
         run: npm ci
