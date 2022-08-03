@@ -126,8 +126,5 @@
       "no-console": "off",
       "no-unused-vars": "off"
     }
-  },
-  "engines": {
-    "node": "14.17.1"
   }
 }
