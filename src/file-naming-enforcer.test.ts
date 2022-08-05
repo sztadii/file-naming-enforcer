@@ -16,8 +16,9 @@ describe('fileNamingEnforcer function', () => {
     jest.spyOn(logger, 'log').mockImplementation()
   })
 
-  afterEach(() => {
-    jest.clearAllMocks()
+  afterEach(jest.clearAllMocks)
+
+  afterAll(() => {
     fileService.removeFolder(/mocks-/)
   })
 

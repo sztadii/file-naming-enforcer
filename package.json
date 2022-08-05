@@ -43,9 +43,9 @@
     "@types/find": "0.2.1",
     "@types/jest": "26.0.19",
     "@types/lodash": "4.14.167",
-    "@types/node": "14.17.1",
-    "@typescript-eslint/parser": "4.11.1",
+    "@types/node": "18.0.0",
     "@typescript-eslint/eslint-plugin": "4.33.0",
+    "@typescript-eslint/parser": "4.11.1",
     "concurrently": "4.1.2",
     "eslint": "5.16.0",
     "eslint-plugin-jest": "22.21.0",
@@ -128,6 +128,6 @@
     }
   },
   "engines": {
-    "node": "14.17.1"
+    "node": "16.0.0"
   }
 }
