@@ -6,17 +6,19 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-12, windows-2022]
+        version: [ 12, 14 ]
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Setup NodeJS
-        # node-version-file will support package.json file
-        # once they publish it as a stable release please uncomment the below line
-        # uses: actions/setup-node@v3
-        uses: actions/setup-node@348e00800850ca70958af8888ebdb3cce7cbcddc
+        uses: actions/setup-node@v3
         with:
-          node-version-file: 'package.json'
+          node-version: ${{ matrix.version }}
 
       - name: Dependency installation
         run: npm ci
