@@ -11,9 +11,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v3
+        # node-version-file will support package.json file
+        # once they publish it as a stable release please uncomment the below line
+        # uses: actions/setup-node@v3
+        uses: actions/setup-node@348e00800850ca70958af8888ebdb3cce7cbcddc
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: 'package.json'
 
       - name: Dependency installation
         run: npm ci
