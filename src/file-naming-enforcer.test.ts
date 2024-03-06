@@ -1,7 +1,7 @@
 import FileNamingEnforcer from './file-naming-enforcer'
 import { FileService, ProcessService, Logger } from './services'
 
-describe('fileNamingEnforcer function', () => {
+describe('FileNamingEnforcer', () => {
   const processService = new ProcessService()
   const fileService = new FileService()
   const logger = new Logger()
