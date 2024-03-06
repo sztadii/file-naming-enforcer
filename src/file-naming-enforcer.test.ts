@@ -24,15 +24,23 @@ describe('fileNamingEnforcer function', () => {
     fileService.removeFolder(/mocks-/)
   })
 
-  it('when type is missing then we display an error message and kill a process', async () => {
-    await fileNamingEnforcer.enforce('folder=./mocks')
+  it('display a success message when searched files are correct', async () => {
+    const folderName = 'mocks-7'
+    await fileService.createFiles(folderName, [
+      'simple-styles.sass',
+      'other-styles.sass'
+    ])
 
-    expect(processService.killProcess).toHaveBeenCalledTimes(1)
+    await fileNamingEnforcer.enforce(
+      `type=kebabCase folder=./${folderName} ext=sass`
+    )
+
+    expect(processService.killProcess).not.toHaveBeenCalled()
     expect(logger.log).toHaveBeenCalledTimes(1)
-    expect(logger.log).toHaveBeenCalledWith('Uuu, `type` argument is missing')
+    expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
-  it('when a project convention is kebabCase and all files are correct then we display a success message', async () => {
+  it('display a success message when a project convention is kebabCase and all files are correct', async () => {
     const folderName = 'mocks-1'
     await fileService.createFiles(folderName, [
       'file-one.js',
@@ -49,7 +57,15 @@ describe('fileNamingEnforcer function', () => {
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
-  it('by default ignore some files and allow to ignore other', async () => {
+  it('display an error message and kill the process when type is missing', async () => {
+    await fileNamingEnforcer.enforce('folder=./mocks')
+
+    expect(processService.killProcess).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledTimes(1)
+    expect(logger.log).toHaveBeenCalledWith('Uuu, `type` argument is missing')
+  })
+
+  it('by default ignore some files and allow to ignore others', async () => {
     const folderName = 'mocks-2'
     await fileService.createFiles(folderName, [
       'README.md',
@@ -67,7 +83,7 @@ describe('fileNamingEnforcer function', () => {
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 
-  it('when a project convention is kebabCase and some files are wrong then we display an error message and kill a process', async () => {
+  it('display an error message and kill the process when a project convention is kebabCase and some files are wrong', async () => {
     const folderName = 'mocks-3'
     await fileService.createFile(folderName, 'SIMPLE-READ.md')
 
@@ -80,7 +96,7 @@ describe('fileNamingEnforcer function', () => {
     )
   })
 
-  it('when a project convention is capitalize and some files are wrong then we display an error message and kill a process', async () => {
+  it('display an error message and kill the process when a project convention is capitalize and some files are wrong', async () => {
     const folderName = 'mocks-4'
     await fileService.createFiles(folderName, [
       'SIMPLE-READ.md',
@@ -97,7 +113,7 @@ describe('fileNamingEnforcer function', () => {
     )
   })
 
-  it('when a project convention is not supported then we display an error message and kill a process', async () => {
+  it('display an error message and kill the process when the project convention is not supported', async () => {
     await fileNamingEnforcer.enforce('folder=./mocks type=newCase')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
@@ -107,7 +123,7 @@ describe('fileNamingEnforcer function', () => {
     )
   })
 
-  it('when a folder is empty then we display a error message and kill a process', async () => {
+  it('display an error message and kill the process when the folder is empty', async () => {
     const folderName = 'mocks-5'
     await fileService.createFolder(folderName)
     await fileNamingEnforcer.enforce(`type=kebabCase folder=./${folderName}`)
@@ -119,7 +135,7 @@ describe('fileNamingEnforcer function', () => {
     )
   })
 
-  it('when a folder does not exist we display a error message and kill a process', async () => {
+  it('display an error message and kill the process when the folder does not exist', async () => {
     await fileNamingEnforcer.enforce('type=kebabCase folder=./xxx')
 
     expect(processService.killProcess).toHaveBeenCalledTimes(1)
@@ -129,7 +145,7 @@ describe('fileNamingEnforcer function', () => {
     )
   })
 
-  it('when we could not find any file with provided extension', async () => {
+  it('display an error message and kill the process when no files with the provided extension are found', async () => {
     const folderName = 'mocks-6'
     await fileService.createFiles(folderName, [
       'SIMPLE-READ.md',
@@ -145,21 +161,5 @@ describe('fileNamingEnforcer function', () => {
     expect(logger.log).toHaveBeenCalledWith(
       `Uuu, in folder ./${folderName} we could not find any file with .tsx extension`
     )
-  })
-
-  it('when searched files are correct then we display a success message', async () => {
-    const folderName = 'mocks-7'
-    await fileService.createFiles(folderName, [
-      'simple-styles.sass',
-      'other-styles.sass'
-    ])
-
-    await fileNamingEnforcer.enforce(
-      `type=kebabCase folder=./${folderName} ext=sass`
-    )
-
-    expect(processService.killProcess).not.toHaveBeenCalled()
-    expect(logger.log).toHaveBeenCalledTimes(1)
-    expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
 })
