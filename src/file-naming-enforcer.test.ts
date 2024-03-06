@@ -18,6 +18,9 @@ describe('fileNamingEnforcer function', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+  })
+
+  afterAll(() => {
     fileService.removeFolder(/mocks-/)
   })
 
@@ -41,6 +44,7 @@ describe('fileNamingEnforcer function', () => {
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
 
+    expect(processService.killProcess).not.toHaveBeenCalled()
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
@@ -58,6 +62,7 @@ describe('fileNamingEnforcer function', () => {
       `type=kebabCase folder=./${folderName} ignore=[SIMPLE-READ.md]`
     )
 
+    expect(processService.killProcess).not.toHaveBeenCalled()
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
@@ -153,6 +158,7 @@ describe('fileNamingEnforcer function', () => {
       `type=kebabCase folder=./${folderName} ext=sass`
     )
 
+    expect(processService.killProcess).not.toHaveBeenCalled()
     expect(logger.log).toHaveBeenCalledTimes(1)
     expect(logger.log).toHaveBeenCalledWith('Great, everything looks fine :)')
   })
