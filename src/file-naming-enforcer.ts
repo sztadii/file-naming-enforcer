@@ -111,5 +111,6 @@ const DEFAULT_IGNORED_FILES = [
   'README',
   'Dockerfile',
   'setupProxy',
+  'setupTests',
   '.DS_Store'
 ]
