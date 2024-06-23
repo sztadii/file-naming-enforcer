@@ -3,8 +3,8 @@ name: Main workflow
 on: push
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -29,10 +29,26 @@ jobs:
       - name: Integration tests
         run: npm run test
 
+  publish:
+    runs-on: ubuntu-20.04
+    needs: test
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Dependency installation
+        run: npm ci
+
       - name: Checking typescript types and build app
         run: npm run build
 
-      # semantic-release release only from master branch, so do not be worry
       - name: Publish to NPM
         run: npx semantic-release
         env:
