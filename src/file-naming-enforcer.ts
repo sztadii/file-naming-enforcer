@@ -108,6 +108,7 @@ const DEFAULT_IGNORED_FILES = [
   '.git',
   'idea',
   'index',
+  'readme',
   'README',
   'Dockerfile',
   'setupProxy',
