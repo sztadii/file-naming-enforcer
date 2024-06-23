@@ -96,7 +96,7 @@ export default class FileNamingEnforcer {
   }
 }
 
-interface ProcessRequestedArguments {
+type ProcessRequestedArguments = {
   folder: string
   ext: string
   type: string
