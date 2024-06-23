@@ -113,5 +113,6 @@ const DEFAULT_IGNORED_FILES = [
   'Dockerfile',
   'setupProxy',
   'setupTests',
-  '.DS_Store'
+  '.DS_Store',
+  '.parcel-cache'
 ]
